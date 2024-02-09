@@ -1,0 +1,161 @@
+<div style="width: 900px; margin: 100px auto 0 auto">
+  <h2>Register</h2>
+
+  <form (ngSubmit)="onSubmit()" [formGroup]="signUpForm">
+    <div class="form-group">
+      <label for="name">Name</label>
+      <input
+        type="text"
+        formControlName="firstName"
+        class="form-control"
+        formControlName="name"
+      />
+      <!-- <div class="invalid-feedback">
+        <div>First Name is required</div>
+      </div> -->
+    </div>
+    <div class="form-group">
+      <label for="email">Email</label>
+      <input
+        type="text"
+        formControlName="email"
+        class="form-control"
+        formControlName="email"
+      />
+      <!-- <div class="invalid-feedback">
+        <div>Last Name is required</div>
+      </div> -->
+    </div>
+
+    <div class="form-group" style="position: relative">
+      <label for="password">Password</label>
+      <input
+        type="password"
+        formControlName="password"
+        class="form-control passwordControl"
+        (input)="strengthCheck(signUpForm.get('password').value)"
+      />
+      <i
+        [ngClass]="passwordVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"
+        style="
+          position: absolute;
+          top: 19px;
+          right: 14px;
+          font-size: 28px;
+          cursor: pointer;
+        "
+        (click)="passwordVisibility($event)"
+      ></i>
+      <!-- <i class="bi bi-eye-slash-fill"></i> -->
+      <!-- *ngIf="
+          !signUpForm.get('password').valid &&
+          signUpForm.get('password').touched
+        " -->
+      <div
+        *ngIf="signUpForm.get('password').touched"
+        class="shadow-lg p-3 mb-5 bg-body rounded"
+        style="
+          width: 275px;
+          height: 214px;
+          position: absolute;
+          top: -66px;
+          left: -290px;
+        "
+      >
+        <span
+          ><div style="display: flex; flex-direction: column">
+            <label for=""> Strength of password </label>
+            <div class="power-container" style="margin-bottom: 20px">
+              <div class="power-point" #passwordStrength></div>
+            </div>
+            <span
+              [ngClass]="
+                signUpForm.get('password').errors?.['minLength']
+                  ? 'invalid'
+                  : 'valid'
+              "
+              >Must contain at least 8 characters</span
+            >
+            <span
+              [ngClass]="
+                signUpForm.get('password').errors?.['oneDigit']
+                  ? 'invalid'
+                  : 'valid'
+              "
+              >Must contain at least one number</span
+            >
+            <span
+              [ngClass]="
+                signUpForm.get('password').errors?.['noSpecialChar']
+                  ? 'invalid'
+                  : 'valid'
+              "
+              >Must contain at least one special character</span
+            >
+            <span
+              [ngClass]="
+                signUpForm.get('password').errors?.['noLowerCase']
+                  ? 'invalid'
+                  : 'valid'
+              "
+              >Must contain at least one lowercase character</span
+            >
+            <span
+              [ngClass]="
+                signUpForm.get('password').errors?.['noUpperCase']
+                  ? 'invalid'
+                  : 'valid'
+              "
+              >Must contain at least one uppercase character</span
+            >
+          </div>
+        </span>
+      </div>
+    </div>
+
+    <div class="form-group" style="position: relative">
+      <label for="confirmPassword">Confirm Password</label>
+      <input
+        [ngStyle]="{
+          backgroundColor: signUpForm.get('confirmPassword').touched
+            ? this.signUpForm.errors
+              ? 'rgb(255, 208, 208)'
+              : ' rgb(153, 250, 178)'
+            : 'transparent'
+        }"
+        type="password"
+        formControlName="confirmPassword"
+        class="form-control"
+      />
+      <i
+        [ngClass]="
+          confirmPasswordVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'
+        "
+        style="
+          position: absolute;
+          top: 19px;
+          right: 14px;
+          font-size: 28px;
+          cursor: pointer;
+        "
+        (click)="confirmPasswordVisibility($event)"
+      ></i>
+      <span
+        *ngIf="
+          this.signUpForm.errors && signUpForm.get('confirmPassword').touched
+        "
+        >must be same as the above password</span
+      >
+    </div>
+    <div class="form-group">
+      <button
+        class="btn btn-primary"
+        type="submit"
+        [disabled]="!signUpForm.valid && signUpForm.touched"
+      >
+        Register
+      </button>
+      <a class="btn btn-link">Cancel</a>
+    </div>
+  </form>
+</div>

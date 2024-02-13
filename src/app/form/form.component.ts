@@ -16,6 +16,8 @@ import {
 export class FormComponent implements OnInit {
   signUpForm: FormGroup;
   @ViewChild('passwordStrength') passwordStrength: ElementRef;
+  // errorObj: { [a: string]: boolean } = null;
+
   passwordVisible: boolean = false;
   confirmPasswordVisible: boolean = false;
 
@@ -32,11 +34,7 @@ export class FormComponent implements OnInit {
         email: new FormControl(null, Validators.required),
         password: new FormControl('', [
           Validators.required,
-          this.minLengthValidator,
-          this.numericValidator,
-          this.specialCharValidator,
-          this.lowerCaseValidator,
-          this.upperCaseValidator,
+          this.customValidation,
         ]),
         confirmPassword: new FormControl('', [Validators.required]),
 
@@ -48,33 +46,53 @@ export class FormComponent implements OnInit {
     );
   }
 
-  minLengthValidator(control: FormControl): { [a: string]: boolean } {
-    if (!/^[\s\S]{8,1000}$/.test(control.value)) return { minLength: true };
-    return null;
+  customValidation(control: FormControl): { [a: string]: boolean } {
+    let MIN_LENGTH_REGEX = /^[\s\S]{8,1000}$/;
+    let NUMERIC_REGEX = /(?=\D*\d)/;
+    let SPECIAL_CHAR_REGEX = /(?=[^-!@._*#%]*[-!@._*#%])/;
+    let LOWER_CASE_REGEX = /(?=[^a-z]*[a-z])/;
+    let UPPER_CASE_REGEX = /(?=[^A-Z]*[A-Z])/;
+    let errorObject = {};
+
+    if (!MIN_LENGTH_REGEX.test(control.value)) errorObject['minLength'] = true;
+    if (!NUMERIC_REGEX.test(control.value)) errorObject['oneDigit'] = true;
+    if (!SPECIAL_CHAR_REGEX.test(control.value))
+      errorObject['noSpecialChar'] = true;
+    if (!LOWER_CASE_REGEX.test(control.value))
+      errorObject['noLowerCase'] = true;
+    if (!UPPER_CASE_REGEX.test(control.value))
+      errorObject['noUpperCase'] = true;
+
+    return errorObject;
   }
 
-  numericValidator(control: FormControl): { [a: string]: boolean } {
-    if (!/(?=\D*\d)/.test(control.value)) return { oneDigit: true };
-    return null;
-  }
+  // minLengthValidator(control: FormControl): { [a: string]: boolean } {
+  //   if (!/^[\s\S]{8,1000}$/.test(control.value)) return { minLength: true };
+  //   return null;
+  // }
 
-  specialCharValidator(control: FormControl): { [a: string]: boolean } {
-    if (!/(?=[^-!@._*#%]*[-!@._*#%])/.test(control.value))
-      return { noSpecialChar: true };
-    return null;
-  }
+  // numericValidator(control: FormControl): { [a: string]: boolean } {
+  //   if (!/(?=\D*\d)/.test(control.value)) return { oneDigit: true };
+  //   return null;
+  // }
 
-  lowerCaseValidator(control: FormControl): { [a: string]: boolean } {
-    if (!/(?=[^a-z]*[a-z])/.test(control.value) || !control.value)
-      return { noLowerCase: true };
-    return null;
-  }
+  // specialCharValidator(control: FormControl): { [a: string]: boolean } {
+  //   if (!/(?=[^-!@._*#%]*[-!@._*#%])/.test(control.value))
+  //     return { noSpecialChar: true };
+  //   return null;
+  // }
 
-  upperCaseValidator(control: FormControl): { [a: string]: boolean } {
-    if (!/(?=[^A-Z]*[A-Z])/.test(control.value) || !control.value)
-      return { noUpperCase: true };
-    return null;
-  }
+  // lowerCaseValidator(control: FormControl): { [a: string]: boolean } {
+  //   if (!/(?=[^a-z]*[a-z])/.test(control.value) || !control.value)
+  //     return { noLowerCase: true };
+  //   return null;
+  // }
+
+  // upperCaseValidator(control: FormControl): { [a: string]: boolean } {
+  //   if (!/(?=[^A-Z]*[A-Z])/.test(control.value) || !control.value)
+  //     return { noUpperCase: true };
+  //   return null;
+  // }
 
   matchPasswordValidator: ValidatorFn = (
     group: FormGroup
@@ -105,7 +123,7 @@ export class FormComponent implements OnInit {
       /(?=[^A-Z]*[A-Z])/,
     ];
 
-    passwordConditions.forEach((condition) => {
+    passwordConditions.forEach((condition: RegExp) => {
       if (password.match(condition)) {
         strength += 1;
       }
@@ -116,23 +134,5 @@ export class FormComponent implements OnInit {
     if (this.passwordStrength?.nativeElement)
       this.passwordStrength.nativeElement.style.backgroundColor =
         widthColor[strength];
-  }
-
-  passwordVisibility(e) {
-    if (this.passwordVisible) {
-      e.target.closest('div').querySelector('input').type = 'text';
-    } else {
-      e.target.closest('div').querySelector('input').type = 'password';
-    }
-    this.passwordVisible = !this.passwordVisible;
-  }
-
-  confirmPasswordVisibility(e) {
-    if (this.confirmPasswordVisible) {
-      e.target.closest('div').querySelector('input').type = 'text';
-    } else {
-      e.target.closest('div').querySelector('input').type = 'password';
-    }
-    this.confirmPasswordVisible = !this.confirmPasswordVisible;
   }
 }

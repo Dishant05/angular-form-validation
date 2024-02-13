@@ -30,13 +30,23 @@
     <div class="form-group" style="position: relative">
       <label for="password">Password</label>
       <input
-        type="password"
+        [type]="passwordVisible ? 'text' : 'password'"
         formControlName="password"
         class="form-control passwordControl"
         (input)="strengthCheck(signUpForm.get('password').value)"
+        passwordErrors
+        [errorObj]="signUpForm.get('password').errors"
+        
+        [customErrors]="{
+          minLength: 'Must contain at least 8 characters',
+          oneDigit: 'Must contain at least one number',
+          noSpecialChar: 'Must contain at least one special character',
+          noLowerCase: 'Must contain at least one lowercase character',
+          noUpperCase: 'Must contain at least one uppercase character'
+        }"
       />
       <i
-        [ngClass]="passwordVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'"
+        [ngClass]="passwordVisible ? 'bi bi-eye-fill' : 'bi bi-eye-slash-fill'"
         style="
           position: absolute;
           top: 19px;
@@ -44,14 +54,14 @@
           font-size: 28px;
           cursor: pointer;
         "
-        (click)="passwordVisibility($event)"
+        (click)="passwordVisible = !passwordVisible"
       ></i>
       <!-- <i class="bi bi-eye-slash-fill"></i> -->
       <!-- *ngIf="
           !signUpForm.get('password').valid &&
           signUpForm.get('password').touched
         " -->
-      <div
+      <!-- <div
         *ngIf="signUpForm.get('password').touched"
         class="shadow-lg p-3 mb-5 bg-body rounded"
         style="
@@ -68,49 +78,49 @@
             <div class="power-container" style="margin-bottom: 20px">
               <div class="power-point" #passwordStrength></div>
             </div>
-            <span
-              [ngClass]="
+              <span
+                [ngClass]="
                 signUpForm.get('password').errors?.['minLength']
                   ? 'invalid'
                   : 'valid'
               "
-              >Must contain at least 8 characters</span
-            >
-            <span
-              [ngClass]="
+                >Must contain at least 8 characters</span
+              >
+              <span
+                [ngClass]="
                 signUpForm.get('password').errors?.['oneDigit']
                   ? 'invalid'
                   : 'valid'
               "
-              >Must contain at least one number</span
-            >
-            <span
-              [ngClass]="
+                >Must contain at least one number</span
+              >
+              <span
+                [ngClass]="
                 signUpForm.get('password').errors?.['noSpecialChar']
                   ? 'invalid'
                   : 'valid'
               "
-              >Must contain at least one special character</span
-            >
-            <span
-              [ngClass]="
+                >Must contain at least one special character</span
+              >
+              <span
+                [ngClass]="
                 signUpForm.get('password').errors?.['noLowerCase']
                   ? 'invalid'
                   : 'valid'
               "
-              >Must contain at least one lowercase character</span
-            >
-            <span
-              [ngClass]="
+                >Must contain at least one lowercase character</span
+              >
+              <span
+                [ngClass]="
                 signUpForm.get('password').errors?.['noUpperCase']
                   ? 'invalid'
                   : 'valid'
               "
-              >Must contain at least one uppercase character</span
-            >
+                >Must contain at least one uppercase character</span
+              >
           </div>
         </span>
-      </div>
+      </div> -->
     </div>
 
     <div class="form-group" style="position: relative">
@@ -123,13 +133,13 @@
               : ' rgb(153, 250, 178)'
             : 'transparent'
         }"
-        type="password"
+        [type]="confirmPasswordVisible ? 'text' : 'password'"
         formControlName="confirmPassword"
         class="form-control"
       />
       <i
         [ngClass]="
-          confirmPasswordVisible ? 'bi bi-eye-slash-fill' : 'bi bi-eye-fill'
+          confirmPasswordVisible ? 'bi bi-eye-fill' : 'bi bi-eye-slash-fill'
         "
         style="
           position: absolute;
@@ -138,7 +148,7 @@
           font-size: 28px;
           cursor: pointer;
         "
-        (click)="confirmPasswordVisibility($event)"
+        (click)="confirmPasswordVisible = !confirmPasswordVisible"
       ></i>
       <span
         *ngIf="
